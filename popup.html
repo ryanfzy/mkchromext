@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="MovieKong">
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="jquery-1.11.1.min.js"></script>
+	<script src="angular.min.js"></script>
+	<script src="jsfile.js"></script>
+	<script src="doubanapi.js"></script>
+	<title></title>
+<head>
+<body>
+<div ng-controller="SearchController">
+<div id="input">
+	<input type="text" name="search" ng-model="query"/>
+	<button id="searchBtn" ng-click="getResult(query)">Search</button>
+</div>
+<table id="searchResult" border="0">
+	<tr ng-repeat="result in results">
+		<td><img src="{{result.image}}" /></td>
+		<td>
+			{{result.title}}({{result.year}})<br>
+			Rate: {{result.rating}}<br>
+			Director: {{result.directors}}<br>
+			Actors: {{result.actors}}<br>
+		</td>
+	</tr>
+</table>
+</div>
+</body>
+</html>
+
