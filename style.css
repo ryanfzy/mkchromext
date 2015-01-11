@@ -1,40 +1,50 @@
-#input{
-	width: 250px;
-	display: block;
-	background-color: #0066ff;
-	color: white;
-}
-
-.name{
-	width: 400px;
-	word-break: break-all;
-}
-
-.link{
-	word-break: break-all;
-}
-span[name=status]{
-	background-color: blue;
-	color: white;
-}
-
-td.estate{
-	width: 5px;
-	background-color: red;
-}
-
-span[name=error]{
-	background-color: red;
-	color: white;
+body{
+	width: 300px;
+	font: 10px 'Microsoft YaHei',arial,tahoma,\5b8b\4f53,sans-serif;
 }
 
 table{
-	font: 10px 'Microsoft YaHei',arial,tahoma,\5b8b\4f53,sans-serif;
 	display: block;
 	border-bottom: 0px;
 }
 
-table tr td{
+table tr td.image{
+	float: right;
+}
+
+table tr td.description{
 	height: 70px;
 	vertical-align: top;
 }
+
+.height30{
+	height: 30px;
+}
+
+#searchBox{
+	width: 300px;
+	border: 1px solid blue;
+}
+
+#searchBox input{
+	width: 223px;
+	border: 0px;
+	font-size: 15px;
+	padding-left: 5px;
+}
+
+#searchBox button{
+	width: 67px;
+	border: 0px;
+	height: 30px;
+	border-radius: 0px;
+}
+
+a{
+	text-decoration: none;
+}
+
+input:focus{
+	outline: 0;
+}
+

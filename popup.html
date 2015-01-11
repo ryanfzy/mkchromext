@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="MovieKong">
 <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="jquery-1.11.1.min.js"></script>
 	<script src="angular.min.js"></script>
@@ -9,23 +10,14 @@
 	<title></title>
 <head>
 <body>
-<div ng-controller="SearchController">
-<div id="input">
-	<input type="text" name="search" ng-model="query"/>
-	<button id="searchBtn" ng-click="getResult(query)">Search</button>
+<div ng-controller="AppController">
+<div id="searchBox" class="pure-u">
+	<div class="pure-input-1">
+	<input type="text" placeholder="Search a Moive" ng-model="query"/>
+	<button class="pure-button pure-button-primary" ng-click="getResult(query)">Search</button>
+	</div>
 </div>
-<table id="searchResult" border="0">
-	<tr ng-repeat="result in results">
-		<td><img src="{{result.image}}" /></td>
-		<td>
-			{{result.title}}({{result.year}})<br>
-			Rate: {{result.rating}}<br>
-			Director: {{result.directors}}<br>
-			Actors: {{result.actors}}<br>
-		</td>
-	</tr>
-</table>
-</div>
+<mk-tab></mk-tab>
 </body>
 </html>
 
