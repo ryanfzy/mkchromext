@@ -17,27 +17,37 @@ table tr td.description{
 	vertical-align: top;
 }
 
-.height30{
-	height: 30px;
+#top-menu{
+	width: 300px;
 }
 
-#searchBox{
-	width: 300px;
+#search-box{
+	width: 270px;
 	border: 1px solid blue;
 }
 
-#searchBox input{
-	width: 223px;
+#search-box input{
+	width: 194px;
 	border: 0px;
 	font-size: 15px;
 	padding-left: 5px;
 }
 
-#searchBox button{
+#search-box button{
 	width: 67px;
 	border: 0px;
 	height: 30px;
 	border-radius: 0px;
+}
+
+#top-menu .buttons{
+	float: right;
+	margin-top: 5px;
+}
+
+#top-menu .buttons img{
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
 a{

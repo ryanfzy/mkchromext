@@ -11,13 +11,17 @@
 <head>
 <body>
 <div ng-controller="AppController">
-<div id="searchBox" class="pure-u">
-	<div class="pure-input-1">
-	<input type="text" placeholder="Search a Moive" ng-model="query"/>
-	<button class="pure-button pure-button-primary" ng-click="getResult(query)">Search</button>
+<div id="top-menu">
+	<div id="search-box" class="pure-u">
+		<div class="pure-input-1">
+		<input type="text" placeholder="Search a Moive" ng-model="query"/>
+		<button class="pure-button pure-button-primary" ng-click="getResult(query)">Search</button>
+		</div>
 	</div>
-</div>
+	<div class="buttons">
+		<img src="images/back-button.png" ng-click=""/>
+	</div>
+<div>
 <mk-tab></mk-tab>
 </body>
 </html>
-
