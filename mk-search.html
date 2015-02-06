@@ -1,0 +1,11 @@
+<table id="search-result" border="0">
+	<tr class="result-entry" ng-repeat="result in results">
+		<td class="image"><img src="{{result.image}}" /></td>
+		<td class="description">
+			<a href="#" ng-click="getPage(result.alt)">{{result.title}}({{result.year}})</a><br>
+			Rate: {{result.rating}}<br>
+			Director: {{result.directors}}<br>
+			Actors: {{result.actors}}<br>
+		</td>
+	</tr>
+</table>

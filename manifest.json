@@ -8,10 +8,21 @@
 		"default_title": "my ext",
 		"default_popup": "popup.html"
 	},
+    "background": {
+        "scripts": ["bg.js"]
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://www.66ys.cc/*/*"],
+            "js": ["jquery-1.11.1.min.js", "cs.js"],
+            "run_at": "document_end"
+        }
+    ],
 	"permissions": [
 		"tabs",
 		"storage",
 		"http://*/",
 		"https://*/"
-	]
+	],
+    "web_accessible_resources" : ["search.png"]
 }
