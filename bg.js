@@ -1,25 +1,4 @@
-var bool = function(val){
-    if (typeof val === 'undefined'){
-        return false;
-    }
-    else if (typeof val === 'object'){
-        var length = Array.isArray(val) ? val.length : Object.keys(val).length;
-        if (length === 0){
-            return false;
-        }
-    }
-    else if (typeof val === 'string'){
-        if (val.length === 0 || val.search(/ +/) > -1){
-            return false;
-        }
-    }
-    else if (typeof val === 'number'){
-        if (val <= 0){
-            return false;
-        }
-    }
-    return true;
-};
+
 
 var ttest = function(val){
     if (test(val))
@@ -28,6 +7,59 @@ var ttest = function(val){
         alert(val + '(false)');
 };
 
+/*
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-    sendResponse({url:'hello'});
+    doubanapi.searchOne(request.title, function(data){
+        resurl = data.alt;
+        chrome.tabs.query({active:true,currentWindow:true}, function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id, {url:resurl});
+        });
+    });
 });
+*/
+
+var douban = {
+    name : 'douban',
+    domain : 'https://api.douban.com',
+    responseType : 'json',
+    apis : {
+        search : {
+            base : '/v2/movie/search',
+            request : ['q', 'tag', 'start', 'count'],
+            response : ['start', 'count', 'total', 'query', 'tag', 'subjects']
+        }
+    }
+};
+
+
+var api = createAPI();
+var doubanapi = api.add_api(douban);
+var rq = doubanapi.createRequest('search');
+rq.q(query);
+//rq.request({q: query});
+rq.get('subjects', function(subjects){
+    // do something with subjects
+});
+//api.douban.searchOne(search_for);
+alert('bg.js');
+
+// use case
+// api is a register, apis added by .add_api() in this register are singletons
+var api = createAPI();
+var douban = api.add_api('douban');
+douban.add_domain('https://api.douban.com');
+// var douban = api.add_api('duban', 'https://api.douban.com');
+var search = douban.create_request('search');
+search.add_request_tags(['q', 'tag', 'start', 'count']);
+search.add_response_tags(['start', 'count', 'total', 'query', 'tag', 'subjects']);
+
+search.q('keyword').tag('category').start(10).count(5).send();
+search.receive(function(response){
+    var total = response.total;
+    var subjects = response.subjects;
+    // do something with 'total' and 'subjects'
+});
+
+// after we create an api named 'douban', we get always retrieve it when we need it
+var doubanapi = api.get_api('douban');
+
