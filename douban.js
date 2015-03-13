@@ -49,6 +49,12 @@ function forEach(iterable, fn){
     }
 }
 
+function copy(data){
+};
+
+function dcopy(data){
+};
+
 var createAPI = (function(){
     var api = {};
 
@@ -89,6 +95,29 @@ var createAPI = (function(){
     var APIMethod = function(method_name){
         this.name = method_name;
     }
+
+    APIMethod.prototype = {
+        add_request_tags : function(tag_names){
+            var this_obj = this;
+            forEach(tag_names, function(tag_name){
+                this_obj[tag_name] = _create_request_method(tag_name);
+            });
+        },
+        _create_request_method : function(tag_name){
+            var this_obj = this;
+            return function(data){
+                this_obj.send_tags[tag_name] = data;
+                return this_obj;
+            }
+        },
+        add_response_tags : function(tag_names){
+            this.response_tags = copy(tag_names);
+        },
+        send : function(){
+        },
+        receive : function(receiveFn){
+        }
+    };
 
     function dcopy(obj, exceptions){
         var newobj = {};
