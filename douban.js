@@ -45,18 +45,9 @@ function forEach(iterable, fn){
 
 function copy(data){
     var cp;
-    if (data instanceof Array){
-        cp = [];
-        forEach(data, function(item){
-            cp.push(item);
-        });
-    }
-    else if (typeof data == 'object'){
-        cp = {};
-        forEach(data, function(val, key){
-            cp[key] = val;
-        });
-    }
+    forEach(data, function(val, key){
+        cp[key] = val;
+    });
     return cp;
 };
 
