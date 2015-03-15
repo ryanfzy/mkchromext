@@ -31,20 +31,14 @@ function createBoolFn(val, truths){
 }
 
 function forEach(iterable, fn){
-    var i, ii;
-    if (iterable instanceof Array){
-        for (i = 0, ii = iterable.length; i < ii; i++){
-            fn(iterable[i], i);
+    if (typeof iterable === 'object'){
+        var k, keys = Object.keys(iterable);
+        for (var i = 0, ii = keys.length; i < ii; i++){
+            k = keys[i];
+            fn(iterable[k], k);
         }
     }
-    else if (typeof iterable === 'object'){
-        var keys = Object.keys(iterable);
-        for (i = 0, ii = keys.length; i < ii; i++){
-            var key = keys[i];
-            fn(iterable[key], key);
-        }
-    }
-    else {
+    else{
         fn(iterable);
     }
 }
