@@ -1,19 +1,39 @@
 
 describe("Test forEach function", function(){
-    var alist = ['a', 'b', 'c'];
-    var aobj = {a: 10, b: 20, c: 30};
-    it("test list - should pass", function(){
-        var actual;
-        var fval = -1;
-        forEach(alist, function(val, key){
-            actual = alist[key];
-            expect(val).toEqual(actual);
+    it("test a single number value", function(){
+        var aValue = 18;
+        var expLen = 0;
+        forEach(aValue, function(val){
+            expect(val).toEqual(aValue);
+            expLen++;
         });
+        expect(expLen).toEqual(1);
     });
-    it("test list - should fail", function(){
-        var fval = -1;
-        forEach(alist, function(val, key){
-            expect(val).toEqual(fval);
+
+    it("test a single string value", function(){
+        var aValue = "hello";
+        var expLen = 0;
+        forEach(aValue, function(val){
+            expect(val).toEqual(aValue);
         });
+        expect(expLen).toEqual(1);
+    });
+
+    it("test a list of number", function(){
+        var aList = [10, 20, 30];
+        var eList = [];
+        forEach(aList, function(val){
+            eList.push(val);
+        });
+        expect(eList).toEqual(aList);
+    });
+
+    it("test a list of string", function(){
+        var aList = ['abc', 'efg', 'hij'];
+        var eList = [];
+        forEach(aList, function(val){
+            eList.push(val);
+        });
+        expect(eList).toEqual(aList);
     });
 });
