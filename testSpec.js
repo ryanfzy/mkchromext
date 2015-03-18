@@ -15,6 +15,7 @@ describe("Test forEach function", function(){
         var expLen = 0;
         forEach(aValue, function(val){
             expect(val).toEqual(aValue);
+            expLen++;
         });
         expect(expLen).toEqual(1);
     });
@@ -35,5 +36,14 @@ describe("Test forEach function", function(){
             eList.push(val);
         });
         expect(eList).toEqual(aList);
+    });
+
+    it("test an object", function(){
+        var aObject = {a:'apple', b: 12};
+        var expObject = {};
+        forEach(aObject, function(val, key){
+            expObject[key] = val;
+        });
+        expect(expObject).toEqual(aObject);
     });
 });

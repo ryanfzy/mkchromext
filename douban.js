@@ -30,16 +30,25 @@ function createBoolFn(val, truths){
     };
 }
 
-function forEach(iterable, fn){
-    if (typeof iterable === 'object'){
-        var k, keys = Object.keys(iterable);
+function isIterable(obj){
+    if (typeof obj === 'object'){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function forEach(obj, fn){
+    if (isIterable(obj)){
+        var k, keys = Object.keys(obj);
         for (var i = 0, ii = keys.length; i < ii; i++){
             k = keys[i];
-            fn(iterable[k], k);
+            fn(obj[k], k);
         }
     }
     else{
-        fn(iterable);
+        fn(obj);
     }
 }
 
