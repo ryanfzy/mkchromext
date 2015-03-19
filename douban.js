@@ -30,6 +30,9 @@ function createBoolFn(val, truths){
     };
 }
 
+
+// only object is iterable
+// string, number, boolean are not iterables
 function isIterable(obj){
     if (typeof obj === 'object'){
         return true;
@@ -66,26 +69,26 @@ function dcopy(data){
 var createAPI = (function(){
     var api = {};
 
-    var apipub = {};
-
-    apipub.add_api = function(api_name, api_domain){
-        // keep going from here
-        api_domain = api_domain || '';
-        api[api_name] = new API(api_domain);
-        apipub.get_api(api_name);
+    var add_api = function(api_name){
+        var newAPI = new API();
+        api[api_name] = newAPI;
+        return newAPI;
     }
 
-    apipub.get_api(api_name) = function(api_name){
+    var get_api = function(api_name){
         return api[api_name];
     }
 
     return function(){
-        return apipub;
+        return {
+            add_api : add_api,
+            get_api : get_api
+        }
     };
 
-    var API = function(api_domain){
-        this.domain = api_domain;
-        this.methods = [];
+    var API = function(){
+        this.domain = '';
+        this.methods = {};
     }
 
     API.prototype = {
@@ -93,37 +96,70 @@ var createAPI = (function(){
             this.domain = api_domain;
         },
         create_request : function(method_name){
-            return _add_method(method_name);
+            var newMethod = new APIMethod();
+            this.methods[method_name] = newMethod;
+            return newMethod;
         },
-        _add_method : function(method_name){
-            return new APIMethod(method_name);
-        },
+        get_request : function(method_name){
+            return this.methods[method_name];
+        }
     };
 
-    var APIMethod = function(method_name){
-        this.name = method_name;
+    var APIMethod = function(){
+        this.response_body = {};
+        this.send_body = {};
     }
 
     APIMethod.prototype = {
         add_request_tags : function(tag_names){
             var this_obj = this;
             forEach(tag_names, function(tag_name){
-                this_obj[tag_name] = _create_request_method(tag_name);
+                this_obj[tag_name] = this._create_request_method(tag_name);
             });
         },
         _create_request_method : function(tag_name){
             var this_obj = this;
             return function(data){
-                this_obj.send_tags[tag_name] = data;
+                this_obj.send_body[tag_name] = data;
                 return this_obj;
             }
         },
         add_response_tags : function(tag_names){
-            this.response_tags = copy(tag_names);
+            var this_obj = this;
+            forEach(tags_names, function(tag_name){
+                this_obj.response_body[tag_name] = '';
+            });
         },
-        send : function(){
+        _build_request_url : function(){
+            var part = this.domain + '?';
+            forEach(this.send_body, function(val, key){
+                var sep = '&';
+                if (part.charAt(part.length-1) == '?'){
+                    sep = '';
+                }
+                part = part + sep + key + '=' + val;
+            });
+            return part;
         },
-        receive : function(receiveFn){
+        send : function(userReceiveFn){
+            var url = this._build_request_url();
+            var responseFn = this._create_responseFn(userReceiveFn);
+            this.urlLoader(url, responseFn);
+        },
+        _create_responseFn : function(userReceiveFn){
+            var this_obj = this;
+            return function(data){
+                this_obj._process_response(data);
+                userRecieveFn(this_obj.resposne_body);   
+            }
+        },
+        _process_response : function(raw_data){
+            var raw_keys = Object.keys(raw_data);
+            var ret_keys = Object.keys(this.response_body);
+            var set_keys = this._find_same_keys(raw_keys, ret_keys);
+            forEach(set_keys, function(key){
+                this.response_body[key] = raw_data[key];
+            });
         }
     };
 
