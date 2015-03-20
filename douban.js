@@ -55,16 +55,16 @@ function forEach(obj, fn){
     }
 }
 
+/*
+// not working properly
 function copy(data){
-    var cp;
+    var cp = [];
     forEach(data, function(val, key){
         cp[key] = val;
     });
     return cp;
 };
-
-function dcopy(data){
-};
+*/
 
 var createAPI = (function(){
     var api = {};
@@ -79,13 +79,6 @@ var createAPI = (function(){
         return api[api_name];
     }
 
-    return function(){
-        return {
-            add_api : add_api,
-            get_api : get_api
-        }
-    };
-
     var API = function(){
         this.domain = '';
         this.methods = {};
@@ -96,7 +89,7 @@ var createAPI = (function(){
             this.domain = api_domain;
         },
         create_request : function(method_name){
-            var newMethod = new APIMethod();
+            var newMethod = new APIMethod(this.domain);
             this.methods[method_name] = newMethod;
             return newMethod;
         },
@@ -105,16 +98,20 @@ var createAPI = (function(){
         }
     };
 
-    var APIMethod = function(){
+    var APIMethod = function(domain){
         this.response_body = {};
         this.send_body = {};
+        this.domain = domain;
     }
 
     APIMethod.prototype = {
+        add_sub_domain : function(sub_domain){
+            this.domain = this.domain + sub_domain;
+        },
         add_request_tags : function(tag_names){
             var this_obj = this;
             forEach(tag_names, function(tag_name){
-                this_obj[tag_name] = this._create_request_method(tag_name);
+                this_obj[tag_name] = this_obj._create_request_method(tag_name);
             });
         },
         _create_request_method : function(tag_name){
@@ -126,7 +123,7 @@ var createAPI = (function(){
         },
         add_response_tags : function(tag_names){
             var this_obj = this;
-            forEach(tags_names, function(tag_name){
+            forEach(tag_names, function(tag_name){
                 this_obj.response_body[tag_name] = '';
             });
         },
@@ -143,8 +140,9 @@ var createAPI = (function(){
         },
         send : function(userReceiveFn){
             var url = this._build_request_url();
-            var responseFn = this._create_responseFn(userReceiveFn);
-            this.urlLoader(url, responseFn);
+            //var responseFn = this._create_responseFn(userReceiveFn);
+            //this.urlLoader(url, responseFn);
+            userReceiveFn(url);
         },
         _create_responseFn : function(userReceiveFn){
             var this_obj = this;
@@ -160,6 +158,13 @@ var createAPI = (function(){
             forEach(set_keys, function(key){
                 this.response_body[key] = raw_data[key];
             });
+        }
+    };
+
+    return function(){
+        return {
+            add_api : add_api,
+            get_api : get_api
         }
     };
 
@@ -252,6 +257,9 @@ var createAPI = (function(){
     */
 
 })();
-alert('douban.js');
 
-
+alert('here');
+var as = createAPI();
+var a = as.add_api('douban');
+a.add_domain('http');
+alert('there');
