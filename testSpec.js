@@ -102,8 +102,22 @@ describe('test createAPI()', function(){
         search.add_sub_domain('movie/search');
         search.add_request_tags(['q', 'tag', 'start', 'count']);
         search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
-        search.q('matrix').tag('action').start('1').count('2').send(function(response){
-            expect(response).toEqual(eRes);
-        });
+        var aRes = search.q('matrix').tag('action').start('1').count('2').print();
+        expect(aRes).toEqual(eRes);
     });
 });
+
+
+var apis = createAPI();
+var api = apis.add_api('douban');
+api.add_domain('https://api.douban.com/v2/');
+var search = api.create_request('search');
+search.add_sub_domain('movie/search');
+search.add_request_tags(['q', 'tag', 'start', 'count']);
+search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
+search.q('matrix').start('1').count('2').send(function(response){
+    alert('in search');
+    //alert(response.title);
+    alert(response.length);
+});
+alert('testspec.js');

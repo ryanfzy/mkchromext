@@ -138,11 +138,15 @@ var createAPI = (function(){
             });
             return part;
         },
+        print : function(){
+            return this._build_request_url();
+        },
         send : function(userReceiveFn){
             var url = this._build_request_url();
             //var responseFn = this._create_responseFn(userReceiveFn);
-            //this.urlLoader(url, responseFn);
-            userReceiveFn(url);
+            //load_url(url, responseFn);
+            //userReceiveFn(url);
+            load_url(url, userReceiveFn);
         },
         _create_responseFn : function(userReceiveFn){
             var this_obj = this;
@@ -168,6 +172,21 @@ var createAPI = (function(){
         }
     };
 
+    function load_url(url, onsuccessFn){
+        var http = new XMLHttpRequest();
+        http.onreadystatechange = function(){
+            if(http.readyState == 4 && http.status == 200){
+                var jobj = JSON.parse(http.responseText);
+                //onsuccessFn(http.responseText);
+                onsuccessFn(jobj);
+            }
+        };
+        http.open('GET', url, true);
+        http.setRequestHeader('User-Agent', 'mkchromext0.1');
+        http.send(null);
+    }
+
+/*
     function dcopy(obj, exceptions){
         var newobj = {};
     
@@ -192,7 +211,6 @@ var createAPI = (function(){
         return newobj;
     }
 
-    /*
     function createfn(name, v){
         var apiobj = api[name];
         var url = apiobj.domain + apiobj[v.ref];
@@ -208,8 +226,6 @@ var createAPI = (function(){
     }
 
     */
-/*
-    return apipub;
 
     /*
     var dburl = 'https://api.douban.com',
@@ -257,9 +273,4 @@ var createAPI = (function(){
     */
 
 })();
-
-alert('here');
-var as = createAPI();
-var a = as.add_api('douban');
-a.add_domain('http');
-alert('there');
+alert('hhere');
