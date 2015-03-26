@@ -176,14 +176,14 @@ var createAPI = (function(){
         var http = new XMLHttpRequest();
         http.onreadystatechange = function(){
             if(http.readyState == 4 && http.status == 200){
+                alert('in load_url');
                 var jobj = JSON.parse(http.responseText);
                 //onsuccessFn(http.responseText);
                 onsuccessFn(jobj);
             }
         };
         http.open('GET', url, true);
-        http.setRequestHeader('User-Agent', 'mkchromext0.1');
-        http.send(null);
+        http.send();
     }
 
 /*
@@ -210,67 +210,18 @@ var createAPI = (function(){
         }
         return newobj;
     }
-
-    function createfn(name, v){
-        var apiobj = api[name];
-        var url = apiobj.domain + apiobj[v.ref];
-        var callback = v.callback;
-        return function(){
-            var furl = url + arguments[0];
-            var fn = callback[length-1];
-            $.get(furl, function(data){
-                var params = get_params(callback.slice(0,callback.length-1));
-                fn.apply(null, params);
-            });
-        }
-    }
-
     */
-
-    /*
-    var dburl = 'https://api.douban.com',
-	    searchapi = dburl + '/v2/movie/search?q=',
-	    subjectapi = dburl + '/v2/movie/subject/';
-        
-    var searchOne = function(search_for, onsuccess){
-        var url,
-            res = [];
-        url = searchapi + encodeURIComponent(search_for);
-        $.get(url, function(data){
-            onsuccess(data.subjects[0]);
-        });
-    };
-
-    api.douban = {
-        searchOne: searchOne
-    };
-    
-    var client_id = 'd6bf2e431e38c5a2',
-        ykurl = 'https://openapi.youku.com',
-        yksearch = ykurl + '/v2/searches/video/by_keyword.json?client_id=' + client_id + '&category=%E7%94%B5%E5%BD%B1&timeless=4&keyword=';
-
-    var yksearchOne = function(search_for, onsuccess){
-        var url = yksearch + encodeURIComponent(search_for);
-        $.get(url, function(data){
-            onsuccess(data.videos[0]);
-        });
-    };
-
-    api.youku = {
-        searchOne: yksearchOne
-    }
-
-    api.apis = 2;
-    api.searchOne = function(search_for, onsucess){
-        var apis = 0;
-        var callback = funtion(data){
-            apis++;
-            if (this.apis == apis)
-        }
-        api.douban.searchOne(search_for, function(data){
-        });
-    };
-    */
-
 })();
-alert('hhere');
+
+var apis = createAPI();
+var api = apis.add_api('douban');
+api.add_domain('https://api.douban.com/v2/');
+var search = api.create_request('search');
+search.add_sub_domain('movie/search');
+search.add_request_tags(['q','tag', 'start', 'count']);
+search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
+search.q('matrix').start('1').count('2').send(function(response){
+    alert('in send');
+    alert(response.title);
+});
+

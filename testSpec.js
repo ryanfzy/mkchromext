@@ -107,17 +107,3 @@ describe('test createAPI()', function(){
     });
 });
 
-
-var apis = createAPI();
-var api = apis.add_api('douban');
-api.add_domain('https://api.douban.com/v2/');
-var search = api.create_request('search');
-search.add_sub_domain('movie/search');
-search.add_request_tags(['q', 'tag', 'start', 'count']);
-search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
-search.q('matrix').start('1').count('2').send(function(response){
-    alert('in search');
-    //alert(response.title);
-    alert(response.length);
-});
-alert('testspec.js');
