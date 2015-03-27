@@ -81,34 +81,37 @@ var createAPI = (function(){
 
     var API = function(){
         this.domain = '';
-        this.methods = {};
+        this.services = {};
     }
 
     API.prototype = {
         add_domain : function(api_domain){
             this.domain = api_domain;
         },
-        create_request : function(method_name){
-            var newMethod = new APIMethod(this.domain);
-            this.methods[method_name] = newMethod;
-            return newMethod;
+        create_request : function(service_name){
+            var newService = new APIService(this.domain);
+            this.services[service_name] = newService;
+            return newService;
         },
-        get_request : function(method_name){
-            return this.methods[method_name];
+        get_request : function(service_name){
+            return this.services[service_name];
         }
     };
 
-    var APIMethod = function(domain){
+    var APIService = function(domain){
         this.response_body = {};
-        this.send_body = {};
+        this.request_body = {};
         this.domain = domain;
     }
 
     APIMethod.prototype = {
         add_sub_domain : function(sub_domain){
+            //TODO: check if sub_domain cross over domain
             this.domain = this.domain + sub_domain;
         },
         add_request_tags : function(tag_names){
+            //TODO: need to handle case when no tag name needed
+            //  e.g. protocol://domain/sub_domain/value, where value has no tag name
             var this_obj = this;
             forEach(tag_names, function(tag_name){
                 this_obj[tag_name] = this_obj._create_request_method(tag_name);
@@ -117,7 +120,7 @@ var createAPI = (function(){
         _create_request_method : function(tag_name){
             var this_obj = this;
             return function(data){
-                this_obj.send_body[tag_name] = data;
+                this_obj.request_body[tag_name] = data;
                 return this_obj;
             }
         },
@@ -128,6 +131,9 @@ var createAPI = (function(){
             });
         },
         _build_request_url : function(){
+            //TODO: need to handle 2 cases:
+            //  1) protocol://domain/sub_domain?k1=v1&k2=v2&...
+            //  2) protocol://domain/sub_domain/value
             var part = this.domain + '?';
             forEach(this.send_body, function(val, key){
                 var sep = '&';
@@ -143,10 +149,10 @@ var createAPI = (function(){
         },
         send : function(userReceiveFn){
             var url = this._build_request_url();
-            //var responseFn = this._create_responseFn(userReceiveFn);
-            //load_url(url, responseFn);
+            var responseFn = this._create_responseFn(userReceiveFn);
+            load_url(url, responseFn);
             //userReceiveFn(url);
-            load_url(url, userReceiveFn);
+            //load_url(url, userReceiveFn);
         },
         _create_responseFn : function(userReceiveFn){
             var this_obj = this;
@@ -176,7 +182,6 @@ var createAPI = (function(){
         var http = new XMLHttpRequest();
         http.onreadystatechange = function(){
             if(http.readyState == 4 && http.status == 200){
-                alert('in load_url');
                 var jobj = JSON.parse(http.responseText);
                 //onsuccessFn(http.responseText);
                 onsuccessFn(jobj);
@@ -213,15 +218,24 @@ var createAPI = (function(){
     */
 })();
 
+// use case 1
 var apis = createAPI();
 var api = apis.add_api('douban');
-api.add_domain('https://api.douban.com/v2/');
+api.add_domain('https://api.douban.com/');
 var search = api.create_request('search');
-search.add_sub_domain('movie/search');
+search.add_sub_domain('/v2/movie/search');
 search.add_request_tags(['q','tag', 'start', 'count']);
 search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
 search.q('matrix').start('1').count('2').send(function(response){
-    alert('in send');
-    alert(response.title);
+    document.write(response.title);
 });
+
+// use case 2
+var subject = '/v2/movie/subject/{id}';
+var celebrity = '/v2/movie/celebrity/{id}';
+var search = '/v2/movie/search?{q,tag,start,count}';
+var subjectRequest = api.create_request('subject', subject);
+subjectRequest.id('1764795').send();
+var celebrityRequest = api.create_request('celebrity', celebrity);
+celebrityRequest('1764795').send();
 
