@@ -55,6 +55,35 @@ function forEach(obj, fn){
     }
 }
 
+function reverse(str){
+    var result = '';
+    for (var i = str.length-1; i > -1; i--){
+        result = result + str[i];
+    }
+    return result;
+}
+
+function startsWith(tstr, cstr, isCaseSensitive){
+    if (!isCaseSensitive){
+        tstr = tstr.toLowerCase();
+        cstr = cstr.toLowerCase();
+    }
+    for (var i = 0, len = cstr.length; i < len; i++){
+        if (tstr[i] != cstr[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+function endsWith(tstr, cstr, isCaseSensitive){
+    alert(tstr+':'+cstr);
+    var rtstr = reverse(tstr);
+    var rcstr = reverse(cstr);
+    alert(rtstr+':'+rcstr);
+    return startsWith(rtstr, rcstr, isCaseSensitive);
+}
+
 /*
 // not working properly
 function copy(data){
@@ -104,9 +133,15 @@ var createAPI = (function(){
         this.domain = domain;
     }
 
-    APIMethod.prototype = {
+    APIService.prototype = {
         add_sub_domain : function(sub_domain){
-            //TODO: check if sub_domain cross over domain
+            // here only check if domain ends a / and sub domain starts a / at same time
+            // other overlaps blam programmer
+            var dlen = this.domain.length;
+            var slen = subdomain.length;
+            if (this.domain[dlen-1] == '/' && subdomain[slen-1] == '/'){
+                sub_domain = sub_domain.substring(1);
+            }
             this.domain = this.domain + sub_domain;
         },
         add_request_tags : function(tag_names){
@@ -218,6 +253,7 @@ var createAPI = (function(){
     */
 })();
 
+/*
 // use case 1
 var apis = createAPI();
 var api = apis.add_api('douban');
@@ -239,3 +275,4 @@ subjectRequest.id('1764795').send();
 var celebrityRequest = api.create_request('celebrity', celebrity);
 celebrityRequest('1764795').send();
 
+*/

@@ -90,7 +90,6 @@ describe('test copy function', function(){
         expect(aObj).toEqual(eObj);
     });
 });
-*/
 
 describe('test createAPI()', function(){
     it('test url create by api', function(){
@@ -106,4 +105,48 @@ describe('test createAPI()', function(){
         expect(aRes).toEqual(eRes);
     });
 });
+*/
 
+describe('test startsWith()', function(){
+    beforeAll(function(){
+        this.str = 'apples'
+    });
+
+    it('test 1 letter', function(){
+        expect(startsWith(this.str, 'a')).toBe(true);
+    });
+
+    it('test more than 1 letters', function(){
+        expect(startsWith(this.str, 'apple')).toBe(true);
+    });
+
+    it('test sames 2 words', function(){
+        expect(startsWith(this.str, 'apples')).toBe(true);
+    });
+
+    it('test 1 letter negative', function(){
+        expect(startsWith(this.str, 'b')).toBe(false);
+    });
+});
+
+describe('test endsWith()', function(){
+    beforeAll(function(){
+        this.str = 'apples';
+    });
+
+    it('test 1 letter', function(){
+        expect(endsWith(this.str, 's')).toBe(true);
+    });
+    
+    it('test more than 1 letter', function(){
+        expect(endsWith(this.str, 'pples')).toBe(true);
+    });
+
+    it('test same 2 words', function(){
+        expect(endsWith(this.str, 'apples')).toBe(true);
+    });
+
+    it('test 1 letter negative', function(){
+        expect(endsWith(this.str, 'e')).toBe(false);
+    });
+});
