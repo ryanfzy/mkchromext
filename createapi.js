@@ -130,19 +130,55 @@ var createAPI = (function(){
     var APIService = function(domain){
         this.response_body = {};
         this.request_body = {};
+        this.repalce_body = {};
         this.domain = domain;
     }
 
     APIService.prototype = {
         add_sub_domain : function(sub_domain){
+            //TODO: this funtion musth check if sub_domain contains '{}' 3)#3
+            var tag_regex = /\{.*\}/;
+            if (tag_regex.test(sub_domain)){
+                this._complex_parse(sub_domain);
+            }
+            else{
+                this._simple_parse(sub_domain);
+            }
+        },
+        _complex_parse : function(sub_domain){
+            var tag_regex = /[/?]\{.*?\}/g;
+            var matches = sub_domain.match(tag_regex);
+            if (matches){
+                this_obj = this;
+                forEach(matches, function(mat){
+                    if (startsWith(mat, '/'){
+                        //TODO: create a trim_ex fn
+                        this._add_replace_tag(trim_ex(mat.substring(1), '{}'));
+                    }
+                    else if (startsWith(mat, '?'){
+                        var tags = trim_ex(mat.substring(1)).split(/[,|, ]/);
+                        this.add_request_tags(tags);
+                    }
+                });
+            }
+        },
+        _simple_parse : function(sub_domain){
             // here only check if domain ends a / and sub domain starts a / at same time
             // other overlaps blam programmer
-            var dlen = this.domain.length;
-            var slen = subdomain.length;
-            if (this.domain[dlen-1] == '/' && subdomain[slen-1] == '/'){
+            if (endsWith(this.domain, '/') && startsWith(subdomain, '/')){
                 sub_domain = sub_domain.substring(1);
             }
             this.domain = this.domain + sub_domain;
+        },
+        _add_replace_tag : function(tag_name){
+            this[tag_name] = this._create_replace_method(tag_name);
+        },
+        _create_replace_method : function(tag_name){
+            var this_obj = this;
+            return function(data){
+                this_obj.replace_body[tag_name] = data;
+                return this_obj;
+            }
         },
         add_request_tags : function(tag_names){
             //TODO: need to handle case when no tag name needed
@@ -254,25 +290,52 @@ var createAPI = (function(){
 })();
 
 /*
-// use case 1
-var apis = createAPI();
-var api = apis.add_api('douban');
-api.add_domain('https://api.douban.com/');
-var search = api.create_request('search');
-search.add_sub_domain('/v2/movie/search');
-search.add_request_tags(['q','tag', 'start', 'count']);
-search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
-search.q('matrix').start('1').count('2').send(function(response){
-    document.write(response.title);
-});
+1) create a api repository:
 
-// use case 2
-var subject = '/v2/movie/subject/{id}';
-var celebrity = '/v2/movie/celebrity/{id}';
-var search = '/v2/movie/search?{q,tag,start,count}';
-var subjectRequest = api.create_request('subject', subject);
-subjectRequest.id('1764795').send();
-var celebrityRequest = api.create_request('celebrity', celebrity);
-celebrityRequest('1764795').send();
+    var apis = createAPI();
 
+2) add a api to the api repository:
+
+    // #1
+    var api = apis.add_api('douban');
+    api.add_domain('https://api.douban.com/');
+
+    // #2
+    var api = apis.add_api('douabn', 'https://api.douban.com/');
+
+3) create a api service:
+
+    // #1
+    var search = api.create_request('search');
+    search.add_sub_domain('/v2/movie/search');
+
+    // #2
+    var search = api.create_request('search', '/v2/movie/search');
+
+    // #3
+    var search = api.create_request('search', '/v2/movie/search?{q,tag,start,count}');
+
+4) add request tags that can be used on the service:
+
+    search.add_request_tags(['q','tag', 'start', 'count']);
+
+this will create protocol://domain/subdomain?key1=val1&key2=val2...
+
+sometime, the api is the form protocol://domain/subdomain/request | /request/sub-subdomain
+you must use this method
+
+    var ser = api.create_request('service', '/subdomain/{tagName}');
+    ser.tagName('val').send();
+
+this will create protocol://domain/subdomain/val
+
+5) add response tags, the result you want from the service:
+
+    search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
+
+6) send a request:
+
+    search.q('matrix').start('1').count('2').send(function(response){
+        document.write(response.title);
+    });
 */
