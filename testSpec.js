@@ -150,3 +150,10 @@ describe('test endsWith()', function(){
         expect(endsWith(this.str, 'e')).toBe(false);
     });
 });
+
+describe('test trim_ex()', function(){
+    it('test trim "{" and "}"', function(){
+        var str = '{good}';
+        expect(trim_ex(str, ['{','}'])).toEqual('good');
+    });
+});

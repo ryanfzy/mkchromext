@@ -77,11 +77,30 @@ function startsWith(tstr, cstr, isCaseSensitive){
 }
 
 function endsWith(tstr, cstr, isCaseSensitive){
-    alert(tstr+':'+cstr);
     var rtstr = reverse(tstr);
     var rcstr = reverse(cstr);
-    alert(rtstr+':'+rcstr);
     return startsWith(rtstr, rcstr, isCaseSensitive);
+}
+
+function trim_ex(origin_str, tags){
+    var trimed_str = origin_str.trim();
+    var si, ei;
+    var sb = false, eb = false;
+    forEach(tags, function(tag){
+        if (!sb){
+            if (startsWith(trimed_str, tag)){
+                si = tag.length;
+                sb = true;
+            }
+        }
+        if (!eb){
+            if (endsWith(trimed_str, tag)){
+                ei = trimed_str.length - tag.length;
+                eb = true;
+            }
+        }
+    });
+    return trimed_str.substring(si, ei);
 }
 
 /*
@@ -151,11 +170,11 @@ var createAPI = (function(){
             if (matches){
                 this_obj = this;
                 forEach(matches, function(mat){
-                    if (startsWith(mat, '/'){
+                    if (startsWith(mat, '/')){
                         //TODO: create a trim_ex fn
-                        this._add_replace_tag(trim_ex(mat.substring(1), '{}'));
+                        this._add_replace_tag(trim_ex(mat.substring(1), ['{','}']));
                     }
-                    else if (startsWith(mat, '?'){
+                    else if (startsWith(mat, '?')){
                         var tags = trim_ex(mat.substring(1)).split(/[,|, ]/);
                         this.add_request_tags(tags);
                     }
