@@ -8,6 +8,7 @@ describe("Test forEach function", function(){
         this.aListOfStr = ['apple', 'banana', 'orange'];
         this.aListOfObj = [{a: 12, b: 'dog'}, {c: 0.9, d: 'calendar'}];
         this.aListofNumAndStrAndObj = ['superman', 7, 98, 'spider', {a: 'monkey', b: 67}];
+        this.empty = {};
     });
 
     it("test a single number value", function(){
@@ -56,6 +57,14 @@ describe("Test forEach function", function(){
         });
         expect(expObject).toEqual(aObject);
     });
+
+    it('test empty object', function(){
+        var aEmpty = {};
+        forEach(this.empty, function(val, key){
+            aEmpty[key] = val;
+        });
+        expect(aEmpty).toEqual(this.empty);
+    });
 });
 
 /*
@@ -90,8 +99,68 @@ describe('test copy function', function(){
         expect(aObj).toEqual(eObj);
     });
 });
+*/
 
 describe('test createAPI()', function(){
+    beforeAll(function(){
+        this.domain = 'http://domainapi.com';
+        this.rq1 = '/{value}';
+        this.rq2 = '/{value}/sub_domain';
+        this.rq3 = '?{k1, k2}';
+        this.rq4 = '/{value}?{k1, k2}';
+        this.rq5 = '/{value}/sub_domain?{k1, k2}';
+
+        this.value = 'testvalaue';
+        this.k1 = 'k1';
+        this.k2 = 'k2';
+        this.v1 = 'testvalue1';
+        this.v2 = 'testvalue2';
+            
+        this.erq1 = this.domain + '/' + this.value;
+        this.erq2 = this.erq1 + '/sub_domain';
+        var query = '?' + this.k1 + '=' + this.v1 + '&' + this.k2 + '=' + this.v2;
+        this.erq3 = this.domain + query;
+        this.erq4 = this.erq1 + query;
+        this.erq5 = this.erq2  + query;
+    });
+
+    beforeEach(function(){
+        var api = createAPI().add_api('testapi');
+        api.add_domain(this.domain);
+        this.request = api.create_request('testrequest');
+    });
+
+    it('test rq1', function(){
+        this.request.add_sub_domain(this.rq1);
+        var act = this.request.value(this.value).print();
+        expect(act).toEqual(this.erq1);
+    });
+
+    it('test rq2', function(){
+        this.request.add_sub_domain(this.rq2);
+        var act = this.request.value(this.value).print();
+        expect(act).toEqual(this.erq2);
+    });
+
+    it('test rq3', function(){
+        this.request.add_sub_domain(this.rq3);
+        var act = this.request.k1(this.v1).k2(this.v2).print();
+        expect(act).toEqual(this.erq3);
+    });
+
+    it('test rq4', function(){
+        this.request.add_sub_domain(this.rq4);
+        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).print();
+        expect(act).toEqual(this.erq4);
+    });
+    
+    it('test rq5', function(){
+        this.request.add_sub_domain(this.rq5);
+        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).print();
+        expect(act).toEqual(this.erq5);
+    });
+
+    /*
     it('test url create by api', function(){
         var eRes = 'https://api.douban.com/v2/movie/search?q=matrix&tag=action&start=1&count=2';
         var apis = createAPI();
@@ -104,8 +173,8 @@ describe('test createAPI()', function(){
         var aRes = search.q('matrix').tag('action').start('1').count('2').print();
         expect(aRes).toEqual(eRes);
     });
+    */
 });
-*/
 
 describe('test startsWith()', function(){
     beforeAll(function(){

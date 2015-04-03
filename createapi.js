@@ -149,34 +149,38 @@ var createAPI = (function(){
     var APIService = function(domain){
         this.response_body = {};
         this.request_body = {};
-        this.repalce_body = {};
+        this.replace_body = {};
         this.domain = domain;
     }
 
     APIService.prototype = {
         add_sub_domain : function(sub_domain){
-            //TODO: this funtion musth check if sub_domain contains '{}' 3)#3
-            var tag_regex = /\{.*\}/;
+            var tag_regex;
+            this._simple_parse(sub_domain);
+
+            //check if sub_domain contains replace body
+            tag_regex = /\{.*\}/;
             if (tag_regex.test(sub_domain)){
-                this._complex_parse(sub_domain);
-            }
-            else{
-                this._simple_parse(sub_domain);
+                this._complex_parse();
             }
         },
-        _complex_parse : function(sub_domain){
+        _complex_parse : function(){
+            // handles 2 cases:
+            //  1) .../{tag}/urlpart
+            //  2) ...?{tag1, tag2, ...}
             var tag_regex = /[/?]\{.*?\}/g;
-            var matches = sub_domain.match(tag_regex);
-            if (matches){
+            var matches = this.domain.match(tag_regex);
+            if (matches != -1){
                 this_obj = this;
                 forEach(matches, function(mat){
+                    // case 1
                     if (startsWith(mat, '/')){
-                        //TODO: create a trim_ex fn
-                        this._add_replace_tag(trim_ex(mat.substring(1), ['{','}']));
+                        this_obj._add_replace_tag(trim_ex(mat.substring(1), ['{','}']));
                     }
+                    // case 2
                     else if (startsWith(mat, '?')){
-                        var tags = trim_ex(mat.substring(1)).split(/[,|, ]/);
-                        this.add_request_tags(tags);
+                        var tags = trim_ex(mat.substring(1), ['{','}']).split(/[,|, ]/);
+                        this_obj.add_request_tags(tags);
                     }
                 });
             }
@@ -200,8 +204,7 @@ var createAPI = (function(){
             }
         },
         add_request_tags : function(tag_names){
-            //TODO: need to handle case when no tag name needed
-            //  e.g. protocol://domain/sub_domain/value, where value has no tag name
+            // this only handles query, tag_names always result ?k1=v1&k2=v2&...
             var this_obj = this;
             forEach(tag_names, function(tag_name){
                 this_obj[tag_name] = this_obj._create_request_method(tag_name);
@@ -221,18 +224,42 @@ var createAPI = (function(){
             });
         },
         _build_request_url : function(){
-            //TODO: need to handle 2 cases:
-            //  1) protocol://domain/sub_domain?k1=v1&k2=v2&...
-            //  2) protocol://domain/sub_domain/value
-            var part = this.domain + '?';
-            forEach(this.send_body, function(val, key){
-                var sep = '&';
-                if (part.charAt(part.length-1) == '?'){
-                    sep = '';
-                }
-                part = part + sep + key + '=' + val;
+            //need to handle many cases, see below:
+            var rp = /\/\{.*?\}/g,
+                rq = /\?\{.*?\}/g;
+
+            var query = '',
+                result = this.domain;
+
+            // handle replace body
+            forEach(this.replace_body, function(val, key){
+                var rpk = '{' + key + '}';
+                result = result.replace(rpk, val);
             });
-            return part;
+
+            //handle request body
+            var this_obj = this;
+            forEach(this.request_body, function(val, key){
+                if (query == ''){
+                    query = query + '?';
+                }
+                else{
+                    query = query + '&';
+                }
+                query = query + key + '=' + val;
+            });
+            
+            // check if there is a place holder for request body
+            if (rq.test(this.domain)){
+                result = result.replace(rq, query);
+            }
+            else{
+                if (endsWith(this.domain, '/')){
+                    result = result.substring(0, this.domain.length-1);
+                }
+                result = result + query;
+            }
+            return result;
         },
         print : function(){
             return this._build_request_url();
@@ -357,4 +384,23 @@ this will create protocol://domain/subdomain/val
     search.q('matrix').start('1').count('2').send(function(response){
         document.write(response.title);
     });
+
+OTHERS:
+
+possible api formats:
+
+    protocol://domain/sub_domain/{value}
+        => protocol://domain/sub_domain/value
+        
+    protocol://domain/sub_domain/{value}/sub_subdomain
+        => protocol://domain/sub_domain/value/sub_subdomain
+
+    protocol://domain/sub_domain?{k1, k2, ...}
+        => protocol://domain/sub_domain?k1=v1&k2=v2...
+
+    protocol://domain/sub_domain/{value}?{k1, k2, ...}
+        => protocol://domain/sub_domain/value?k1=v1&k2=v2...
+
+    protocol://domain/sub_domain/{value}/sub_domain?{k1, k2, ...}
+        => protocol://domain/sub_domain/value/sub_domain?k1=v1&k2=v2...
 */
