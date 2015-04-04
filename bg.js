@@ -1,4 +1,11 @@
-
+chrome.app.runtime.onLaunched.addListener(function(){
+    chrome.app.window.create('htmltotest.html', {
+        'bounds': {
+            'width': 400,
+            'height': 500
+        }
+    });
+});
 
 var ttest = function(val){
     if (test(val))
@@ -18,48 +25,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 });
 */
 
-var douban = {
-    name : 'douban',
-    domain : 'https://api.douban.com',
-    responseType : 'json',
-    apis : {
-        search : {
-            base : '/v2/movie/search',
-            request : ['q', 'tag', 'start', 'count'],
-            response : ['start', 'count', 'total', 'query', 'tag', 'subjects']
-        }
-    }
-};
+var apis = createAPI();
 
+(function(){
+var doubanapi = apis.add_api('douban');
+doubanapi.add_domain('https://api.douban.com/');
 
-var api = createAPI();
-var doubanapi = api.add_api(douban);
-var rq = doubanapi.createRequest('search');
-rq.q(query);
-//rq.request({q: query});
-rq.get('subjects', function(subjects){
-    // do something with subjects
+var search = doubanapi.create_request('search');
+search.add_sub_domain('v2/movie/search');
+search.add_request_tags(['q', 'tag','start', 'count']);
+
+var subject = doubanapi.create_request('subject');
+subject.add_sub_domain('v2/movie/subject/{id}');
+
+var celebrity = doubanapi.create_request('celebrity');
+celebrity.add_sub_domain('v2/movie/celebrity/{id}');
+
+var top250 = doubanapi.create_request('top250');
+top250.add_sub_domain('v2/movie/top250');
+
+var usbox = doubanapi.create_request('usbox');
+usbox.add_sub_domain('v2/movie/us_box');
+})(); 
+
+var doubanapi = apis.get_api('douban');
+var search = doubanapi.get_request('search');
+var subject = doubanapi.get_request('subject');
+search.q('matrix').count(1).send(function(data){
+    var sub = data.subjects[0];
+    document.write(sub.title);
+    document.write('<img src="'+sub.images.medium+'"/>');
 });
-//api.douban.searchOne(search_for);
-alert('bg.js');
-
-// use case
-// api is a register, apis added by .add_api() in this register are singletons
-var api = createAPI();
-var douban = api.add_api('douban');
-douban.add_domain('https://api.douban.com');
-// var douban = api.add_api('duban', 'https://api.douban.com');
-var search = douban.create_request('search');
-search.add_request_tags(['q', 'tag', 'start', 'count']);
-search.add_response_tags(['start', 'count', 'total', 'query', 'tag', 'subjects']);
-
-search.q('keyword').tag('category').start(10).count(5).send();
-search.receive(function(response){
-    var total = response.total;
-    var subjects = response.subjects;
-    // do something with 'total' and 'subjects'
-});
-
-// after we create an api named 'douban', we get always retrieve it when we need it
-var doubanapi = api.get_api('douban');
-

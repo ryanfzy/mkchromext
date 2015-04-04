@@ -188,7 +188,7 @@ var createAPI = (function(){
         _simple_parse : function(sub_domain){
             // here only check if domain ends a / and sub domain starts a / at same time
             // other overlaps blam programmer
-            if (endsWith(this.domain, '/') && startsWith(subdomain, '/')){
+            if (endsWith(this.domain, '/') && startsWith(sub_domain, '/')){
                 sub_domain = sub_domain.substring(1);
             }
             this.domain = this.domain + sub_domain;
@@ -265,11 +265,12 @@ var createAPI = (function(){
             return this._build_request_url();
         },
         send : function(userReceiveFn){
+            // simply passed the response object to the user
             var url = this._build_request_url();
-            var responseFn = this._create_responseFn(userReceiveFn);
-            load_url(url, responseFn);
+            //var responseFn = this._create_responseFn(userReceiveFn);
+            //load_url(url, responseFn);
             //userReceiveFn(url);
-            //load_url(url, userReceiveFn);
+            load_url(url, userReceiveFn);
         },
         _create_responseFn : function(userReceiveFn){
             var this_obj = this;
@@ -289,6 +290,7 @@ var createAPI = (function(){
     };
 
     return function(){
+        // this is the singleton object
         return {
             add_api : add_api,
             get_api : get_api
@@ -300,7 +302,6 @@ var createAPI = (function(){
         http.onreadystatechange = function(){
             if(http.readyState == 4 && http.status == 200){
                 var jobj = JSON.parse(http.responseText);
-                //onsuccessFn(http.responseText);
                 onsuccessFn(jobj);
             }
         };
