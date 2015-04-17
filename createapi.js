@@ -103,6 +103,14 @@ function trim_ex(origin_str, tags){
     return trimed_str.substring(si, ei);
 }
 
+function copy_ex(source, members){
+    var cp = {};
+    forEach(members, function(member){
+        cp[member] = members[member];
+    });
+    return cp;
+}
+
 /*
 // not working properly
 function copy(data){
