@@ -1,140 +1,20 @@
-function bool(val){
-    if (typeof val === 'undefined'){
-        return false;
-    }
-    else if (typeof val === 'object'){
-        var length = Array.isArray(val) ? val.length : Object.keys(val).length;
-        if (length === 0){
-            return false;
-        }
-    }
-    else if (typeof val === 'string'){
-        if (val.length === 0 || val.search(/ +/) > -1){
-            return false;
-        }
-    }
-    else if (typeof val === 'number'){
-        if (val <= 0){
-            return false;
-        }
-    }
-    return true;
-}
-
-function createBoolFn(val, truths){
-    return function(val){
-        if (truths.indexOf(val) > -1){
-            return true;
-        }
-        return bool(val);
-    };
-}
-
-
-// only object is iterable
-// string, number, boolean are not iterables
-function isIterable(obj){
-    if (typeof obj === 'object'){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-function forEach(obj, fn){
-    if (isIterable(obj)){
-        var k, keys = Object.keys(obj);
-        for (var i = 0, ii = keys.length; i < ii; i++){
-            k = keys[i];
-            fn(obj[k], k);
-        }
-    }
-    else{
-        fn(obj);
-    }
-}
-
-function reverse(str){
-    var result = '';
-    for (var i = str.length-1; i > -1; i--){
-        result = result + str[i];
-    }
-    return result;
-}
-
-function startsWith(tstr, cstr, isCaseSensitive){
-    if (!isCaseSensitive){
-        tstr = tstr.toLowerCase();
-        cstr = cstr.toLowerCase();
-    }
-    for (var i = 0, len = cstr.length; i < len; i++){
-        if (tstr[i] != cstr[i]){
-            return false;
-        }
-    }
-    return true;
-}
-
-function endsWith(tstr, cstr, isCaseSensitive){
-    var rtstr = reverse(tstr);
-    var rcstr = reverse(cstr);
-    return startsWith(rtstr, rcstr, isCaseSensitive);
-}
-
-function trim_ex(origin_str, tags){
-    var trimed_str = origin_str.trim();
-    var si, ei;
-    var sb = false, eb = false;
-    forEach(tags, function(tag){
-        if (!sb){
-            if (startsWith(trimed_str, tag)){
-                si = tag.length;
-                sb = true;
-            }
-        }
-        if (!eb){
-            if (endsWith(trimed_str, tag)){
-                ei = trimed_str.length - tag.length;
-                eb = true;
-            }
-        }
-    });
-    return trimed_str.substring(si, ei);
-}
-
-function copy_ex(source, members){
-    var cp = {};
-    forEach(members, function(member){
-        cp[member] = members[member];
-    });
-    return cp;
-}
-
-/*
-// not working properly
-function copy(data){
-    var cp = [];
-    forEach(data, function(val, key){
-        cp[key] = val;
-    });
-    return cp;
-};
-*/
 
 var createAPI = (function(){
     var api = {};
 
-    var add_api = function(api_name){
+    /////////////////////////////////////
+    var add_api = function(name){
         var newAPI = new API();
-        api[api_name] = newAPI;
+        api[name] = newAPI;
         return newAPI;
     }
 
-    var get_api = function(api_name){
-        return api[api_name];
+    var get_api = function(name){
+        return api[name];
     }
+    ///////////////////////////////////
 
+    ///////////////////////////////////
     var API = function(){
         this.domain = '';
         this.services = {};
@@ -153,16 +33,25 @@ var createAPI = (function(){
             return this.services[service_name];
         }
     };
+    /////////////////////////////////////////
 
+    ///////////////////////////////////////
     var APIService = function(domain){
         this.response_body = {};
         this.request_body = {};
         this.replace_body = {};
-        this.domain = domain;
+        this.domain = domain || '';
     }
 
     APIService.prototype = {
-        add_sub_domain : function(sub_domain){
+
+        start : function(){
+            this.response_body = {};
+            this.request_body = {};
+            this.replace_body = {};
+        },
+
+        addSubDomain : function(sub_domain){
             var tag_regex;
             this._simple_parse(sub_domain);
 
@@ -172,6 +61,7 @@ var createAPI = (function(){
                 this._complex_parse();
             }
         },
+
         _complex_parse : function(){
             // handles 2 cases:
             //  1) .../{tag}/urlpart
@@ -193,17 +83,19 @@ var createAPI = (function(){
                 });
             }
         },
+
         _simple_parse : function(sub_domain){
             // here only check if domain ends a / and sub domain starts a / at same time
-            // other overlaps blam programmer
             if (endsWith(this.domain, '/') && startsWith(sub_domain, '/')){
                 sub_domain = sub_domain.substring(1);
             }
             this.domain = this.domain + sub_domain;
         },
+
         _add_replace_tag : function(tag_name){
             this[tag_name] = this._create_replace_method(tag_name);
         },
+        
         _create_replace_method : function(tag_name){
             var this_obj = this;
             return function(data){
@@ -211,13 +103,15 @@ var createAPI = (function(){
                 return this_obj;
             }
         },
-        add_request_tags : function(tag_names){
+
+        addRequestTags : function(tag_names){
             // this only handles query, tag_names always result ?k1=v1&k2=v2&...
             var this_obj = this;
             forEach(tag_names, function(tag_name){
                 this_obj[tag_name] = this_obj._create_request_method(tag_name);
             });
         },
+
         _create_request_method : function(tag_name){
             var this_obj = this;
             return function(data){
@@ -225,12 +119,14 @@ var createAPI = (function(){
                 return this_obj;
             }
         },
-        add_response_tags : function(tag_names){
+
+        addResponseTags : function(tag_names){
             var this_obj = this;
             forEach(tag_names, function(tag_name){
                 this_obj.response_body[tag_name] = '';
             });
         },
+
         _build_request_url : function(){
             //need to handle many cases, see below:
             var rp = /\/\{.*?\}/g,
@@ -269,9 +165,11 @@ var createAPI = (function(){
             }
             return result;
         },
-        print : function(){
+
+        build : function(){
             return this._build_request_url();
         },
+
         send : function(userReceiveFn){
             // simply passed the response object to the user
             var url = this._build_request_url();
@@ -280,6 +178,7 @@ var createAPI = (function(){
             //userReceiveFn(url);
             load_url(url, userReceiveFn);
         },
+
         _create_responseFn : function(userReceiveFn){
             var this_obj = this;
             return function(data){
@@ -287,6 +186,7 @@ var createAPI = (function(){
                 userRecieveFn(this_obj.resposne_body);   
             }
         },
+
         _process_response : function(raw_data){
             var raw_keys = Object.keys(raw_data);
             var ret_keys = Object.keys(this.response_body);
@@ -296,14 +196,7 @@ var createAPI = (function(){
             });
         }
     };
-
-    return function(){
-        // this is the singleton object
-        return {
-            add_api : add_api,
-            get_api : get_api
-        }
-    };
+    /////////////////////////////////////////////////
 
     function load_url(url, onsuccessFn){
         var http = new XMLHttpRequest();
@@ -317,31 +210,25 @@ var createAPI = (function(){
         http.send();
     }
 
-/*
-    function dcopy(obj, exceptions){
-        var newobj = {};
-    
-        if (obj instanceof Array){
-            forEach(obj, function(v){
-                newobj[v] = v;
-            })
-        }
-        else if (typeof obj === 'object'){
-            forEach(obj, function(v,k){
-                if (exceptions && exceptions.indexOf(k) > -1){
-                    return;
-                }
-                if (typeof v === 'object'){
-                    newobj[k] = dcopy(v);
-                }
-                else {
-                    newobj[k] = v;
-                }
-            });
-        }
-        return newobj;
+    //////////////////////////////////////////
+    var create_service = function(url){
+        var service = new APISerivce();
+        newAPI.addSubDomain(url);
+        return service;
     }
-    */
+    ////////////////////////////////////////
+
+    /////////////////////////////////////////
+    var return_api = {
+        addAPI : add_api,
+        getAPI : get_api,
+        createService : create_service;
+    }
+
+    return function(){
+        return return_api;
+    };
+    /////////////////////////////////////////
 })();
 
 /*
