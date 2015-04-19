@@ -222,7 +222,7 @@ var createAPI = (function(){
     var return_api = {
         addAPI : add_api,
         getAPI : get_api,
-        createService : create_service;
+        createService : create_service
     }
 
     return function(){

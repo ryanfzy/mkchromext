@@ -103,22 +103,57 @@ function trim_ex(origin_str, tags){
     return trimed_str.substring(si, ei);
 }
 
+function flatten(original, result){
+    result = result || [];
+    forEach(original, function(item){
+        if (Array.isArray(item)){
+            flatten(flatten(item, result));
+        }
+        else{
+            result.push(item);
+        }
+    });
+    return result;
+}
+
+function _nest_copy(source, fields){
+    if (fields.length == 1){
+        return source[fields[0]];
+    }
+    
+    var f = fields[0];
+    if (startsWith(f, '@')){
+        var ar = [];
+        var k = f.substring(1);
+        forEach(source[k], function(v){
+            var cp = _nest_copy(v, fields.slice(1));
+            ar.push(cp);
+        });
+        return flatten(ar);
+    }
+    else{
+        return _nest_copy(source[f], fields.slice(1));
+    }
+}
+
 function copy_ex(source, members){
     var cp = {};
 
-    if (Array.isArray(members){
+    if (Array.isArray(members)){
         forEach(members, function(member){
             cp[member] = members[member];
         });
     }
     else if (typeof members === 'object'){
+        var startForArray = false;
         forEach(members, function(v, k){
             var fields = v.split('.');
-            var nv = source;
-            forEach(fields, function(f){
-                nv = nv[f];
-            });
-            cp[k] = nv;
+            if (fields.length == 1){
+                cp[k] = source[v];
+            }
+            else if (fields.length > 1){
+                cp[k] = _nest_copy(source, fields);
+            }
         });
     }
 

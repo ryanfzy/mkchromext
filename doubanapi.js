@@ -1,19 +1,22 @@
 angular.module('doubanModule', []).factory('doubanapi', ['$http',
 	function($http){
-		var count = 0;
-        var doubanapi = createapi.create('duban', 'http://api.douban.com/v2');
-        doubanapi.add_method('search_more', '/movie/search').add_request_tags(['q','tag','start','count']);
-        doubanapi.add_method('search_one', '/movie/subject/{id}');
-        doubanapi.set_send_delegate($http);
+        var api = createapi();
+        var douban = 'http://api.douban.com/v2/movie/';
+        var search_more_service = api.createService(douban + 'search?{q,tag,start,count}');
+        var serach_one_service = api.createService(douban + 'subject/{id}');
+
 		var search_more = function(search_for, onsuccess){
-			var url = searchapi + encodeURIComponent(search_for);
-            doubanapi.get_method('search_more').q(search_for).send((function(data){
-				onsuccess(res.subjects);
-			});
+			//var url = searchapi + encodeURIComponent(search_for);
+            var url = search_more_service.start().q(search_for).build();
+            $http.get(url).success(function(data){
+                onsuccess(data.subjects);
+            });
 		};
 
         var search_one = function(search_for, success){
-            doubanapi.get_method('search_one').id(search_for).send(function(response){
+            var url = search_one_service.start().id(search_for).
+            $http.get(url).onsuccess(function(data){
+                onsuccess(data);
             });
         }
 		var test = function(){
@@ -21,8 +24,8 @@ angular.module('doubanModule', []).factory('doubanapi', ['$http',
 			alert(count);
 		};
 		return {
-			search_more: searchSubjects,
-			search_one: getSubject,
+			searchMore: search_more,
+			searchOne: search_one,
 			test: test
 		}
 	}

@@ -101,6 +101,7 @@ describe('test copy function', function(){
 });
 */
 
+/*
 describe('test createAPI()', function(){
     beforeAll(function(){
         this.domain = 'http://domainapi.com';
@@ -132,49 +133,35 @@ describe('test createAPI()', function(){
 
     it('test rq1', function(){
         this.request.add_sub_domain(this.rq1);
-        var act = this.request.value(this.value).print();
+        var act = this.request.value(this.value).build();
         expect(act).toEqual(this.erq1);
     });
 
     it('test rq2', function(){
         this.request.add_sub_domain(this.rq2);
-        var act = this.request.value(this.value).print();
+        var act = this.request.value(this.value).build();
         expect(act).toEqual(this.erq2);
     });
 
     it('test rq3', function(){
         this.request.add_sub_domain(this.rq3);
-        var act = this.request.k1(this.v1).k2(this.v2).print();
+        var act = this.request.k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq3);
     });
 
     it('test rq4', function(){
         this.request.add_sub_domain(this.rq4);
-        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).print();
+        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq4);
     });
     
     it('test rq5', function(){
         this.request.add_sub_domain(this.rq5);
-        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).print();
+        var act = this.request.value(this.value).k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq5);
     });
-
-    /*
-    it('test url create by api', function(){
-        var eRes = 'https://api.douban.com/v2/movie/search?q=matrix&tag=action&start=1&count=2';
-        var apis = createAPI();
-        var api = apis.add_api('douban');
-        api.add_domain('https://api.douban.com/v2/');
-        var search = api.create_request('search');
-        search.add_sub_domain('movie/search');
-        search.add_request_tags(['q', 'tag', 'start', 'count']);
-        search.add_response_tags(['count', 'start', 'total', 'subjects', 'title']);
-        var aRes = search.q('matrix').tag('action').start('1').count('2').print();
-        expect(aRes).toEqual(eRes);
-    });
-    */
 });
+*/
 
 describe('test startsWith()', function(){
     beforeAll(function(){
@@ -224,5 +211,68 @@ describe('test trim_ex()', function(){
     it('test trim "{" and "}"', function(){
         var str = '{good}';
         expect(trim_ex(str, ['{','}'])).toEqual('good');
+    });
+});
+
+describe('test flatten()', function(){
+    beforeAll(function(){
+        this.ar1 = [1, 'a', 10, 'apple'];
+        this.ar2 = [[1, 'a'], 'a', 10, 'apple'];
+        this.ar3 = [[[1, 'a'], 'b'], 'a', 10, 'apple'];
+
+        this.ar4 = [1, 'a', [10, 'banana'], 'apple'];
+        this.ar5 = [1, 'a', 10, ['apple','banana', [1, 'c']]];
+        
+        this.er2 = [1, 'a', 'a', 10, 'apple'];
+        this.er3 = [1, 'a', 'b', 'a', 10, 'apple'];
+        this.er4 = [1, 'a', 10, 'banana', 'apple'];
+        this.er5 = [1, 'a', 10, 'apple', 'banana', 1, 'c'];
+    });
+
+    it('test ar1', function(){
+        expect(flatten(this.ar1)).toEqual(this.ar1);
+    });
+
+    it('test ar2', function(){
+        expect(flatten(this.ar2)).toEqual(this.er2);
+    });
+
+    it('test ar3', function(){
+        expect(flatten(this.ar3)).toEqual(this.er3);
+    });
+
+    it('test ar4', function(){
+        expect(flatten(this.ar4)).toEqual(this.er4);
+    });
+
+    it('test ar5', function(){
+        expect(flatten(this.ar5)).toEqual(this.er5);
+    });
+});
+
+describe('test copy_ex()', function(){
+    beforeAll(function(){
+        this.t1 = {
+            k1 : 'v1',
+            k2 : 'v2',
+            k3 : {
+                k31 : 'v31',
+                k32 : 'v32'
+            },
+            k4 : [
+                {k41 : 'v41', k42 : 'v42'},
+                {k41 : 'v41-1', k42 : 'v42-2'}
+            ]
+        }
+
+        this.e1 = {
+            k1 : 'v1',
+            k2 : 'v32',
+            k3 : ['v42', 'v42-2']
+        }
+    });
+
+    it('test t1', function(){
+        expect(copy_ex(this.t1, {k1:'k1',k2:'k3.k32',k3:'@k4.k42'})).toEqual(this.e1);
     });
 });
