@@ -21,15 +21,15 @@ var createAPI = (function(){
     }
 
     API.prototype = {
-        add_domain : function(api_domain){
+        addDomain : function(api_domain){
             this.domain = api_domain;
         },
-        create_request : function(service_name){
+        createRequest : function(service_name){
             var newService = new APIService(this.domain);
             this.services[service_name] = newService;
             return newService;
         },
-        get_request : function(service_name){
+        getRequest : function(service_name){
             return this.services[service_name];
         }
     };
@@ -49,6 +49,7 @@ var createAPI = (function(){
             this.response_body = {};
             this.request_body = {};
             this.replace_body = {};
+            return this;
         },
 
         addSubDomain : function(sub_domain){
@@ -78,7 +79,7 @@ var createAPI = (function(){
                     // case 2
                     else if (startsWith(mat, '?')){
                         var tags = trim_ex(mat.substring(1), ['{','}']).split(/[,|, ]/);
-                        this_obj.add_request_tags(tags);
+                        this_obj.addRequestTags(tags);
                     }
                 });
             }
@@ -212,8 +213,8 @@ var createAPI = (function(){
 
     //////////////////////////////////////////
     var create_service = function(url){
-        var service = new APISerivce();
-        newAPI.addSubDomain(url);
+        var service = new APIService();
+        service.addSubDomain(url);
         return service;
     }
     ////////////////////////////////////////

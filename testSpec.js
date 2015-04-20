@@ -101,7 +101,6 @@ describe('test copy function', function(){
 });
 */
 
-/*
 describe('test createAPI()', function(){
     beforeAll(function(){
         this.domain = 'http://domainapi.com';
@@ -126,42 +125,47 @@ describe('test createAPI()', function(){
     });
 
     beforeEach(function(){
-        var api = createAPI().add_api('testapi');
-        api.add_domain(this.domain);
-        this.request = api.create_request('testrequest');
+        var api = createAPI().addAPI('testapi');
+        api.addDomain(this.domain);
+        this.request = api.createRequest('testrequest');
     });
 
     it('test rq1', function(){
-        this.request.add_sub_domain(this.rq1);
+        this.request.addSubDomain(this.rq1);
         var act = this.request.value(this.value).build();
         expect(act).toEqual(this.erq1);
     });
 
     it('test rq2', function(){
-        this.request.add_sub_domain(this.rq2);
+        this.request.addSubDomain(this.rq2);
         var act = this.request.value(this.value).build();
         expect(act).toEqual(this.erq2);
     });
 
     it('test rq3', function(){
-        this.request.add_sub_domain(this.rq3);
+        this.request.addSubDomain(this.rq3);
         var act = this.request.k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq3);
     });
 
     it('test rq4', function(){
-        this.request.add_sub_domain(this.rq4);
+        this.request.addSubDomain(this.rq4);
         var act = this.request.value(this.value).k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq4);
     });
     
     it('test rq5', function(){
-        this.request.add_sub_domain(this.rq5);
+        this.request.addSubDomain(this.rq5);
         var act = this.request.value(this.value).k1(this.v1).k2(this.v2).build();
         expect(act).toEqual(this.erq5);
     });
+
+    it('test rq5 - createSerivce', function(){
+        var service = createAPI().createService(this.domain + this.rq5);
+        var act = service.start().value(this.value).k1(this.v1).k2(this.v2).build();
+        expect(act).toEqual(this.erq5);
+    });
 });
-*/
 
 describe('test startsWith()', function(){
     beforeAll(function(){

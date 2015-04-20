@@ -6,6 +6,7 @@ movieKong.controller('AppController', ['$scope', 'doubanapi',
             $scope.results = [];
 			doubanapi.searchMore(query, function(results){
                 forEach(results, function(r){
+                    alert(Object.keys(r));
                     var result = copy_ex(r, {
                         image : 'image.small',
                         title : 'title',
@@ -13,12 +14,13 @@ movieKong.controller('AppController', ['$scope', 'doubanapi',
                         rating : 'rating.average',
                         directors : '@directors.name',
                         actors : '@casts.name'
-                    };
+                    });
                     result.directors = result.directors.join(' ');
                     result.actors = result.actor.join(' ');
+                    alert(Object.keys(result));
                     $scope.results.push(result);
-                }
-			})
+                });
+			});
 		};
 		$scope.getPage = function(link){
 			chrome.tabs.create({url:link});
@@ -26,7 +28,7 @@ movieKong.controller('AppController', ['$scope', 'doubanapi',
 	}
 ])
 .directive('mkTab', function(){
-	return {
+    return {
 		templateUrl: 'mk-search.html'
 	};
 });
