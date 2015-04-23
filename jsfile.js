@@ -6,18 +6,16 @@ movieKong.controller('AppController', ['$scope', 'doubanapi',
             $scope.results = [];
 			doubanapi.searchMore(query, function(results){
                 forEach(results, function(r){
-                    alert(Object.keys(r));
                     var result = copy_ex(r, {
-                        image : 'image.small',
+                        image : 'images.small',
                         title : 'title',
                         alt : 'alt',
                         rating : 'rating.average',
                         directors : '@directors.name',
                         actors : '@casts.name'
                     });
-                    result.directors = result.directors.join(' ');
-                    result.actors = result.actor.join(' ');
-                    alert(Object.keys(result));
+                    result.directors = result.directors.join(', ');
+                    result.actors = result.actors.join(', ');
                     $scope.results.push(result);
                 });
 			});
