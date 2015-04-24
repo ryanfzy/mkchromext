@@ -1,5 +1,5 @@
 
-var movieKong = angular.module('MovieKong', ['doubanModule']);
+var movieKong = angular.module('MovieKong', ['ngAnimate', 'doubanModule']);
 movieKong.controller('AppController', ['$scope', 'doubanapi',
 	function($scope, doubanapi){
 		$scope.getResult = function(query){

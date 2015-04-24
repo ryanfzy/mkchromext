@@ -1,0 +1,25 @@
+ - add animation to the back button
+
+ x add a single movie page
+    - users can just click to see the whole web page, which gives more information than those
+      from the /movie/subject api. can insert a link in the single movie page and when users 
+      want to see more info, just click it. but users always want to see more info, why bother
+      let users click twice to see the web page
+
+ x show more information about a movie in the single movie page
+    - can be more than those in the web page
+
+ x show comments in the single movie page
+    - can be more than those in the web page
+
+ - add save function to save a single movie page
+    - we can save the link for users, so later they don't need to search everything again
+
+ - insert douban button into appropriate movie webpage
+
+ + add animation to search result entry, so each entry is fade in to the result list one by one
+    - can be different animation here
+    1. fade in
+    2. move from right to left
+
+

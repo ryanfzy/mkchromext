@@ -58,3 +58,20 @@ input:focus{
 	outline: 0;
 }
 
+.result-entry.ng-enter {
+    -webkit-transition: 0.5s linear all;
+    -moz-transition: 0.5s linear all;
+    -o-transition: 0.5s linear all;
+    transition: 0.5s linear all;
+    opacity: 0;
+}
+
+.result-entry.ng-enter-stagger {
+    transition-delay: 0.1s;
+    transition-duration: 0s;
+}
+
+.result-entry.ng-enter.ng-enter-active {
+    opacity: 1;
+}
+
