@@ -22,4 +22,11 @@
     1. fade in
     2. move from right to left
 
+ - add animation to search box, change the width and give some space to the right to show a
+   searching image to user to indicate the status
+    - when searching is finished, hidden the image
 
+ - keep the position of the search box always on the top when user scroll the page down and up
+
+ - add buttons in the same space of the searching image, hidden first, visible when users move
+   cursor to the right of the search button, so usrs only see them when users need them

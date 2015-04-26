@@ -2,11 +2,21 @@
 var movieKong = angular.module('MovieKong', ['ngAnimate', 'doubanModule']);
 movieKong.controller('AppController', ['$scope', 'doubanapi',
 	function($scope, doubanapi){
+        var cssForSearchBoxInit = 'search-box-init';
+        var cssForSearchBoxImageInit = 'image-before-search';
+
+        $scope.className = cssForSearchBoxInit;
+        $scope.imageClass = cssForSearchBoxImageInit;
+
 		$scope.getResult = function(query){
+            $scope.className = cssForSearchBoxInit + ' search-box-searching';
+            $scope.imageClass = 'image-searching';
+
             $scope.results = [];
 			doubanapi.searchMore(query, function(results){
                 forEach(results, function(r){
                     var result = copy_ex(r, {
+                        year : 'year',
                         image : 'images.small',
                         title : 'title',
                         alt : 'alt',
