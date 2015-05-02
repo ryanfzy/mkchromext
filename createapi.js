@@ -1,5 +1,6 @@
 
 var createAPI = (function(){
+    /*
     var api = {};
 
     /////////////////////////////////////
@@ -34,6 +35,7 @@ var createAPI = (function(){
         }
     };
     /////////////////////////////////////////
+    */
 
     ///////////////////////////////////////
     var APIService = function(domain){
@@ -45,7 +47,7 @@ var createAPI = (function(){
 
     APIService.prototype = {
 
-        start : function(){
+        startNew : function(){
             this.response_body = {};
             this.request_body = {};
             this.replace_body = {};
@@ -219,25 +221,21 @@ var createAPI = (function(){
     }
     ////////////////////////////////////////
 
-    /////////////////////////////////////////
     var return_api = {
-        addAPI : add_api,
-        getAPI : get_api,
+        //addAPI : add_api,
+        //getAPI : get_api,
         createService : create_service
     }
 
-    return function(){
-        return return_api;
-    };
-    /////////////////////////////////////////
+    return return_api;
 })();
 
 /*
-1) create a api repository:
+x1) create a api repository:
 
     var apis = createAPI();
 
-2) add a api to the api repository:
+x2) add a api to the api repository:
 
     // #1
     var api = apis.add_api('douban');

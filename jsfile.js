@@ -28,6 +28,8 @@ movieKong.controller('AppController', ['$scope', 'doubanapi',
                     result.actors = result.actors.join(', ');
                     $scope.results.push(result);
                 });
+                $scope.className = cssForSearchBoxInit;
+                $scope.imageClass = cssForSearchBoxImageInit;
 			});
 		};
 		$scope.getPage = function(link){

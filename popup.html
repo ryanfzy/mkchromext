@@ -13,14 +13,17 @@
 <head>
 <body>
 <div ng-controller="AppController">
-<div id="top-menu">
-    <div class="{{className}}">
-		<input type="text" placeholder="Search a Moive" ng-model="query"/>
-		<button ng-click="getResult(query)">Search</button>
-        <img class="{{imageClass}}" src="images/searching.png" />
-	</div>
-<div>
-<mk-tab></mk-tab>
+    <div id="top-menu-background"></div>
+    <div id="top-menu">
+        <div class="{{className}}">
+		    <input type="text" placeholder="Search a Moive" ng-model="query"/>
+		    <button ng-click="getResult(query)">Search</button>
+            <img class="{{imageClass}}" src="images/searching.png" />
+	    </div>
+    </div>
+    <div id="app-body">
+        <mk-tab></mk-tab>
+    </div>
 </div>
 </body>
 </html>

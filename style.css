@@ -2,6 +2,10 @@ body{
 	width: 300px;
 }
 
+#app-body{
+    margin-top: 45px;
+}
+
 table{
 	display: block;
 	border-bottom: 0px;
@@ -18,7 +22,16 @@ table tr td.description{
 
 #top-menu{
 	width: 300px;
-    height: 100px;
+    position: fixed;
+    top: 5px;
+}
+
+#top-menu-background{
+    width: 300px;
+    height: 45px;
+    position: fixed;
+    top: 0px;
+    background-color: white;
 }
 
 .search-box-init {
@@ -31,8 +44,6 @@ table tr td.description{
 	border: 0px;
 	font-size: 15px;
 	padding-left: 5px;
-
-    -webkit-transition: width 0.5s linear;
 }
 
 .search-box-init button{
@@ -43,14 +54,11 @@ table tr td.description{
 }
 
 .search-box-searching input {
-    -webkit-transition: width 0.5s linear;
     width: 190px;
 }
 
 .image-before-search {
-    /*-webkit-transition: display 0.5s linear 1s;*/
     -webkit-transition-property: visibility;
-    -webkit-transition-delay: 0.5s;
     visibility: hidden;
     position: absolute;
 }
@@ -60,9 +68,7 @@ table tr td.description{
     height: 30px;
     float: right;
     vertical-align: top;
-    /*-webkit-transition: display 0.5s linear 1s;*/
     -webkit-transition-property: visibility;
-    -webkit-transition-delay: 0.5s;
     visibility: visible;
 }
 
