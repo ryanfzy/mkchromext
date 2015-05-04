@@ -1,7 +1,6 @@
-
-var movieKong = angular.module('MovieKong', ['ngAnimate', 'doubanModule']);
-movieKong.controller('AppController', ['$scope', 'doubanapi',
-	function($scope, doubanapi){
+var movieKong = angular.module('MovieKong', ['ngAnimate', 'doubanModule', 'youtubeModule']);
+movieKong.controller('AppController', ['$scope', 'doubanapi', 'youtubeapi',
+	function($scope, doubanapi, youtubeapi){
         var cssForSearchBoxInit = 'search-box-init';
         var cssForSearchBoxImageInit = 'image-before-search';
 
