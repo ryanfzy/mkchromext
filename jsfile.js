@@ -29,6 +29,10 @@ movieKong.controller('AppController', ['$scope', 'doubanapi', 'youtubeapi',
                 });
                 $scope.className = cssForSearchBoxInit;
                 $scope.imageClass = cssForSearchBoxImageInit;
+
+                youtubeapi.searchMore(query, function(data){
+                    alert(Object.keys(data));
+                });
 			});
 		};
 		$scope.getPage = function(link){

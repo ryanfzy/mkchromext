@@ -1,9 +1,14 @@
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details){
+    details.requestHeaders.push({name: 'Referer', value: 'moviekong.com'});
+    return {requestHeaders : details.requestHeaders};
+}, {urls: ['<all_urls>']}, ['requestHeaders']);
+
 angular.module('youtubeModule', []).factory('youtubeapi', ['$http',
 	function($http){
         var key = 'AIzaSyBdJBVaF4Hy-Zlc_y3F5DU8H1iK1BRCHA4';
         var url = 'https://www.googleapis.com/youtube/v3/search';
         var api = createAPI.createService(url);
-        youtubeapi.addRequestTags(['channelId', 'channelType', 'eventType', 'location',
+        api.addRequestTags(['channelId', 'channelType', 'eventType', 'location',
             'locationRadius', 'maxResults', 'order', 'pageToken', 'publishedAfter',
             'publishedBefore', 'q', 'regionCode', 'relevanceLanguage', 'safeSearch',
             'topicId', 'type', 'videoCaption', 'videoCategoryId', 'videoDefinition',
@@ -11,16 +16,19 @@ angular.module('youtubeModule', []).factory('youtubeapi', ['$http',
             'videoSyndicated', 'videoType', 'key', 'part']
         );
 
-        $http.defaults.headers.common.Referer = 'https://www.moviekong.com/';
-
+        //$http.defaults.headers.common.Referer = 'moviekong.com';
         var qpart = '|trailer';
 
         var search_more = function(query, onsuccessFn){
             api.startNew().part('snippet').key(key);
-            var apiurl = api.startNew().q(query+qpart).maxResults(10).order('relevance')
+            var apiurl = api.q(query+qpart).maxResults(10).order('relevance')
                 .type('video').videoDuration('short').build();
-            $http.get(apiurl).onsuccess(function(data){
-                onsuccessFn(data);
+            alert(apiurl);
+            $http.get(apiurl).success(function(data,status){
+                console.log(data.items);
+            }).error(function(data,status){
+                alert(data.error.message);
+                alert(status);
             });
         };
 		return {

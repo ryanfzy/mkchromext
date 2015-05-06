@@ -12,9 +12,9 @@ angular.module('doubanModule', []).factory('doubanapi', ['$http',
             });
 		};
 
-        var search_one = function(search_for, success){
+        var search_one = function(search_for, onsuccess){
             var url = search_one_service.startNew().id(search_for).
-            $http.get(url).onsuccess(function(data){
+            $http.get(url).success(function(data){
                 onsuccess(data);
             });
         };

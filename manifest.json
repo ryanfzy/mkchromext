@@ -4,25 +4,25 @@
 	"version": "0.1",
 	"description": "douban search",
 	"browser_action": {
-		"default_icon": "search.png",
+		//"default_icon": "search.png",
 		"default_title": "my ext",
 		"default_popup": "popup.html"
 	},
-    "background": {
-        "scripts": ["bg.js"]
-    },
-    "content_scripts": [
-        {
-            "matches": ["http://www.66ys.cc/*/*"],
-            "js": ["jquery-1.11.1.min.js", "cs.js"],
-            "run_at": "document_end"
-        }
-    ],
+    //"background": {
+        //"scripts": ["bg.js"]
+    //},
+    //"content_scripts": [
+        //{
+            //"matches": ["http://www.66ys.cc/*/*"],
+            //"js": ["jquery-1.11.1.min.js", "cs.js"],
+            //"run_at": "document_end"
+        //}
+    //],
 	"permissions": [
+        "webRequest",
 		"tabs",
 		"storage",
-		"http://*/",
-		"https://*/"
-	],
-    "web_accessible_resources" : ["search.png"]
+		"http://*/*",
+		"https://*/*"
+	]
 }
