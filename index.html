@@ -9,7 +9,7 @@
     <script src="angular-animate.js"></script>
 	<script src="douban-module.js"></script>
     <script src="youtube-module.js"></script>
-	<script src="jsfile.js"></script>
+	<script src="app.js"></script>
 	<title></title>
 <head>
 <body>
@@ -18,8 +18,7 @@
     <div id="top-menu">
         <div class="{{className}}">
 		    <input type="text" placeholder="Search a Moive" ng-model="query"/>
-		    <button ng-click="getResult(query)">Search</button>
-            <img class="{{imageClass}}" src="images/searching.png" />
+            <button ng-click="getResult(query)">{{searchStatusText}}</button>
 	    </div>
     </div>
     <div id="app-body">

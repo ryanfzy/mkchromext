@@ -2,14 +2,16 @@ var movieKong = angular.module('MovieKong', ['ngAnimate', 'doubanModule', 'youtu
 movieKong.controller('AppController', ['$scope', 'doubanapi', 'youtubeapi',
 	function($scope, doubanapi, youtubeapi){
         var cssForSearchBoxInit = 'search-box-init';
-        var cssForSearchBoxImageInit = 'image-before-search';
+        //var cssForSearchBoxImageInit = 'image-before-search';
+        $scope.searchStatusText = "Search";
 
         $scope.className = cssForSearchBoxInit;
-        $scope.imageClass = cssForSearchBoxImageInit;
+        //$scope.imageClass = cssForSearchBoxImageInit;
 
 		$scope.getResult = function(query){
-            $scope.className = cssForSearchBoxInit + ' search-box-searching';
-            $scope.imageClass = 'image-searching';
+            //$scope.className = cssForSearchBoxInit + ' search-box-searching';
+            //$scope.imageClass = 'image-searching';
+            $scope.searchStatusText = "Searching...";
 
             $scope.results = [];
 			doubanapi.searchMore(query, function(results){
@@ -27,8 +29,9 @@ movieKong.controller('AppController', ['$scope', 'doubanapi', 'youtubeapi',
                     result.actors = result.actors.join(', ');
                     $scope.results.push(result);
                 });
-                $scope.className = cssForSearchBoxInit;
-                $scope.imageClass = cssForSearchBoxImageInit;
+                //$scope.className = cssForSearchBoxInit;
+                //$scope.imageClass = cssForSearchBoxImageInit;
+                $scope.searchStatusText = "Search";
 
                 youtubeapi.searchMore(query, function(data){
                     alert(Object.keys(data));
