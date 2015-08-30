@@ -1,3 +1,10 @@
+// require "doubanapi.js"
+// require "parser.js"
+// require "urlloader.js"
+
+// time: 30-aug-2015
+var titleLocator = 'div[class=title] a';
+
 var title,
     ptitle,
     etitle,
@@ -7,8 +14,8 @@ var title,
 englishreg = /[a-zA-Z]/;
 chinesereg = /[\u4e00-\u9fa5]|[\ufe30-\uffa0]/;
 
-etitle = $('div[class=title]');
-title = etitle.html();
+//etitle = $('div[class=title]');
+//title = etitle.html();
 
 var get_titles = function(data){
     var title,
@@ -34,8 +41,19 @@ var get_titles = function(data){
     return titles;
 }
 
-ptitle = get_titles(title)[0];
+var parser = new Parser(document.documentElement.innerHTML);
+parser.find('div[class=title] a').parse(function(innerHTML, attrs, fstr){
+    var title = get_titles(innerHTML)[0];
+    var url = doubanapi.Search(title);
+    var loader = new UrlLoader();
+    loader.load(url, function(text){
+        alert(text);
+    });
+});
 
+//ptitle = get_titles(title)[0];
+
+/*
 chrome.runtime.sendMessage(
     {title: ptitle},
     function(response){
@@ -46,4 +64,4 @@ chrome.runtime.sendMessage(
         p.before('<img src="' + imgurl+ '"/>');
     }
 );
-
+*/

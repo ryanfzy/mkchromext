@@ -8,16 +8,23 @@
 		"default_title": "my ext",
 		"default_popup": "index.html"
 	},
-    "background": {
-        "scripts": ["backwork.js"]
-    },
-    //"content_scripts": [
-        //{
-            //"matches": ["http://www.66ys.cc/*/*"],
-            //"js": ["jquery-1.11.1.min.js", "cs.js"],
-            //"run_at": "document_end"
-        //}
-    //],
+    //"background": {
+        //"scripts": ["backwork.js"]
+    //},
+    "content_scripts": [
+        {
+            "matches": ["http://www.dygang.com/*/*"],
+            "js": [
+                "common.js",
+                "lib/parser.js", 
+                "createapi.js", 
+                "doubanapi.js",
+                "lib/urlloader.js",
+                "dygang.js"
+            ],
+            "run_at": "document_end"
+        }
+    ],
 	"permissions": [
         "webRequest",
 		"tabs",
