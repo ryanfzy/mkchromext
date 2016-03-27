@@ -51,8 +51,17 @@ function forEach(obj, fn){
         }
     }
     else{
-        fn(obj);
+        fn(obj, 0);
     }
+}
+
+function forEachChar(str, fn){
+    if (typeof str === 'string'){
+        for (var i = 0; i < str.length; i++)
+            fn(str[i], i);
+    }
+    else
+        fn(str, 0);
 }
 
 function reverse(str){
